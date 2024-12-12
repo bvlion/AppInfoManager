@@ -16,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,19 +33,18 @@ import info.bvlion.appinfomanager.utils.isJapaneseLanguage
 
 class ContentsManager(private val firestore: FirebaseFirestore, private val context: Context) {
   @Composable
-  fun ShowPrivacyPolicyDialog() {
-    ShowContentsDialog(ContentType.PRIVACY_POLICY)
+  fun ShowPrivacyPolicyDialog(showDialog: MutableState<Boolean>) {
+    ShowContentsDialog(ContentType.PRIVACY_POLICY, showDialog)
   }
 
   @Composable
-  fun ShowTermsOfServiceDialog() {
-    ShowContentsDialog(ContentType.TERMS_OF_SERVICE)
+  fun ShowTermsOfServiceDialog(showDialog: MutableState<Boolean>) {
+    ShowContentsDialog(ContentType.TERMS_OF_SERVICE, showDialog)
   }
 
   @SuppressLint("SetJavaScriptEnabled")
   @Composable
-  private fun ShowContentsDialog(contentType: ContentType) {
-    val showDialog = remember { mutableStateOf(true) }
+  private fun ShowContentsDialog(contentType: ContentType, showDialog: MutableState<Boolean>) {
     val markdown = remember { mutableStateOf("") }
     val isDarkMode = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
