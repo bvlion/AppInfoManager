@@ -6,10 +6,10 @@
 ## セットアップ
 
 ### 依存関係の追加
-リリースタグを指定して sub module で追加します。
+submodule で追加します。
 
 ``` git
-git submodule add -b v1.0.0 https://github.com/bvlion/AppInfoManager.git
+git submodule add https://github.com/bvlion/AppInfoManager.git
 ```
 
 #### settings.gradle.kts
