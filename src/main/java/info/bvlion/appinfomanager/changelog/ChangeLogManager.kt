@@ -56,6 +56,9 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
                 )
               )
             }
+            errorMessage.value = ""
+          } else {
+            errorMessage.value = "Could not load contents!"
           }
         }.addOnFailureListener {
           Firebase.crashlytics.recordException(it)

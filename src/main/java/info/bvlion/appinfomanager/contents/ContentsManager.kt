@@ -33,25 +33,36 @@ import info.bvlion.appinfomanager.utils.isJapaneseLanguage
 
 class ContentsManager(private val firestore: FirebaseFirestore, private val context: Context) {
   @Composable
-  fun ShowPrivacyPolicyDialog(showDialog: MutableState<Boolean>) {
-    ShowContentsDialog(ContentType.PRIVACY_POLICY, showDialog)
+  fun ShowPrivacyPolicyDialog(
+    showDialog: MutableState<Boolean>,
+    isDarkMode: Boolean = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+  ) {
+    ShowContentsDialog(ContentType.PRIVACY_POLICY, showDialog, isDarkMode)
   }
 
   @Composable
-  fun ShowTermsOfServiceDialog(showDialog: MutableState<Boolean>) {
-    ShowContentsDialog(ContentType.TERMS_OF_SERVICE, showDialog)
+  fun ShowTermsOfServiceDialog(
+    showDialog: MutableState<Boolean>,
+    isDarkMode: Boolean = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+  ) {
+    ShowContentsDialog(ContentType.TERMS_OF_SERVICE, showDialog, isDarkMode)
   }
 
   @SuppressLint("SetJavaScriptEnabled")
   @Composable
-  private fun ShowContentsDialog(contentType: ContentType, showDialog: MutableState<Boolean>) {
+  private fun ShowContentsDialog(
+    contentType: ContentType,
+    showDialog: MutableState<Boolean>,
+    isDarkMode: Boolean,
+  ) {
     val markdown = remember { mutableStateOf("") }
-    val isDarkMode = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     if (showDialog.value && markdown.value.isEmpty()) {
       firestore.collection(COLLECTION_NAME).document(contentType.key).get().addOnSuccessListener { document ->
         if (document.exists()) {
           markdown.value = document.getString(if (isJapaneseLanguage(context)) "ja" else "en") ?: "### No contents found!"
+        } else {
+          markdown.value = "### Could not load contents!\\n\\n[reload](app://reload)"
         }
       }.addOnFailureListener {
         markdown.value = "### Could not load contents!\\n\\n[reload](app://reload)"
