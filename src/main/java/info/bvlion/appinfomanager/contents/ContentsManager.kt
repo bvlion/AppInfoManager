@@ -8,8 +8,11 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -74,51 +77,55 @@ class ContentsManager(private val firestore: FirebaseFirestore, private val cont
       AlertDialog(
         onDismissRequest = { showDialog.value = false },
         text = {
-          Box(
-            Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-          ) {
-            if (markdown.value.isEmpty()) {
-              CircularProgressIndicator()
-            }
-            AndroidView(
-              modifier = Modifier.fillMaxSize(),
-              factory = ::WebView,
-              update = {
-                it.settings.javaScriptEnabled = true
-                it.setBackgroundColor(Color.TRANSPARENT)
-                it.loadDataWithBaseURL(
-                  "file:///android_asset/appInfo/",
-                  HTML_TEMPLATE.replace(
-                    REPLACE_MARKDOWN,
-                    markdown.value
-                  ).replace(
-                    REPLACE_COLOR,
-                    if (isDarkMode) "#fff" else "#000"
-                  ),
-                  "text/html",
-                  "UTF-8",
-                  null
-                )
-                it.webViewClient = object : WebViewClient() {
-                  override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                  }
-
-                  override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                  ): Boolean {
-                    val url = request?.url.toString()
-                    if (url.startsWith("app://reload")) {
-                      markdown.value = ""
-                      return true
+          BoxWithConstraints {
+            val maxHeight = maxHeight * 0.8f
+            val maxWidth = maxWidth * 0.9f
+            Box(
+              Modifier.width(maxWidth).height(maxHeight),
+              contentAlignment = Alignment.Center
+            ) {
+              if (markdown.value.isEmpty()) {
+                CircularProgressIndicator()
+              }
+              AndroidView(
+                modifier = Modifier.fillMaxSize(),
+                factory = ::WebView,
+                update = {
+                  it.settings.javaScriptEnabled = true
+                  it.setBackgroundColor(Color.TRANSPARENT)
+                  it.loadDataWithBaseURL(
+                    "file:///android_asset/appInfo/",
+                    HTML_TEMPLATE.replace(
+                      REPLACE_MARKDOWN,
+                      markdown.value
+                    ).replace(
+                      REPLACE_COLOR,
+                      if (isDarkMode) "#fff" else "#000"
+                    ),
+                    "text/html",
+                    "UTF-8",
+                    null
+                  )
+                  it.webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                      super.onPageFinished(view, url)
                     }
-                    return false
+
+                    override fun shouldOverrideUrlLoading(
+                      view: WebView?,
+                      request: WebResourceRequest?
+                    ): Boolean {
+                      val url = request?.url.toString()
+                      if (url.startsWith("app://reload")) {
+                        markdown.value = ""
+                        return true
+                      }
+                      return false
+                    }
                   }
                 }
-              }
-            )
+              )
+            }
           }
         },
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -128,9 +135,7 @@ class ContentsManager(private val firestore: FirebaseFirestore, private val cont
           }) { Text(if (isJapaneseLanguage(context)) "閉じる" else "Close") }
         },
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(16.dp)
+        modifier = Modifier.padding(16.dp)
       )
     }
   }

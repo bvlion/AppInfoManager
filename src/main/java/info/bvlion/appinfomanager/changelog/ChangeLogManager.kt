@@ -2,12 +2,16 @@ package info.bvlion.appinfomanager.changelog
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,31 +77,34 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
         },
         title = {
           Text(
-            if
-                (isJapaneseLanguage(context))
+            if (isJapaneseLanguage(context))
               "更新履歴"
             else
               "Change Log"
           )
         },
         text = {
-          Box(
-            Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-          ) {
-            if (errorMessage.value.isEmpty() && list.isEmpty()) {
-              CircularProgressIndicator()
-            }
-            if (errorMessage.value.isNotEmpty()) {
-              Text(errorMessage.value)
-            }
-            if (list.isNotEmpty()) {
-              LazyColumn(modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(list) { index, item ->
-                  if (index > 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
+          BoxWithConstraints {
+            val maxHeight = maxHeight * 0.8f
+            val maxWidth = maxWidth * 0.9f
+            Box(
+              Modifier.width(maxWidth).height(maxHeight),
+              contentAlignment = Alignment.Center
+            ) {
+              if (errorMessage.value.isEmpty() && list.isEmpty()) {
+                CircularProgressIndicator()
+              }
+              if (errorMessage.value.isNotEmpty()) {
+                Text(errorMessage.value)
+              }
+              if (list.isNotEmpty()) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                  itemsIndexed(list) { index, item ->
+                    if (index > 0) {
+                      Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    ChangeLogCard(item)
                   }
-                  ChangeLogCard(item)
                 }
               }
             }
@@ -112,7 +119,7 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
           }
         },
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.fillMaxSize().padding(8.dp)
+        modifier = Modifier.padding(8.dp)
       )
     }
   }

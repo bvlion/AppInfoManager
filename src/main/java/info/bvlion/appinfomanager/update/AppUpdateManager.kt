@@ -9,6 +9,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.net.toUri
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -55,7 +56,7 @@ class AppUpdateManager(private val firestore: FirebaseFirestore, private val con
             onClick = {
               Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("market://details?id=" + context.packageName)
+                "market://details?id=${context.packageName}".toUri()
               ).let {
                 context.startActivity(it)
               }
