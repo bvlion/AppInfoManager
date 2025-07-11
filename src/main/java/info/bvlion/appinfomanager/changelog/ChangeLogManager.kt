@@ -60,6 +60,7 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
                 )
               )
             }
+            list.reverse()
             errorMessage.value = ""
           } else {
             errorMessage.value = "Could not load contents!"
