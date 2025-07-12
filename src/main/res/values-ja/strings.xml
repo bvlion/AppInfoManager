@@ -1,0 +1,17 @@
+<resources>
+  <string name="close">閉じる</string>
+  <string name="update">更新</string>
+
+  <string name="contents_message_key">ja</string>
+  <string name="contents_reload">再読み込み</string>
+  <string name="contents_not_found">コンテンツが見つかりませんでした</string>
+  <string name="contents_could_not_load">コンテンツを読み込めませんでした</string>
+
+  <string name="change_log_title">更新履歴</string>
+  <string name="change_log_message_key">messageJa</string>
+  <string name="change_log_error_message">更新履歴を読み込めませんでした</string>
+
+  <string name="update_title">アップデートのお知らせ</string>
+  <string name="update_message_key">updateMessageJa</string>
+  <string name="update_default_message">新しいバージョンが利用可能になりました！</string>
+</resources>

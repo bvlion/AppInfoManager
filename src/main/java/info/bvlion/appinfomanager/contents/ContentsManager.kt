@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
@@ -32,7 +33,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import info.bvlion.appinfomanager.COLLECTION_NAME
-import info.bvlion.appinfomanager.utils.isJapaneseLanguage
+import info.bvlion.appinfomanager.R
 
 class ContentsManager(private val firestore: FirebaseFirestore, private val context: Context) {
   @Composable
@@ -51,7 +52,7 @@ class ContentsManager(private val firestore: FirebaseFirestore, private val cont
     ShowContentsDialog(ContentType.TERMS_OF_SERVICE, showDialog, isDarkMode)
   }
 
-  @SuppressLint("SetJavaScriptEnabled")
+  @SuppressLint("SetJavaScriptEnabled", "UnusedBoxWithConstraintsScope")
   @Composable
   private fun ShowContentsDialog(
     contentType: ContentType,
@@ -63,12 +64,12 @@ class ContentsManager(private val firestore: FirebaseFirestore, private val cont
     if (showDialog.value && markdown.value.isEmpty()) {
       firestore.collection(COLLECTION_NAME).document(contentType.key).get().addOnSuccessListener { document ->
         if (document.exists()) {
-          markdown.value = document.getString(if (isJapaneseLanguage(context)) "ja" else "en") ?: "### No contents found!"
+          markdown.value = document.getString(context.getString(R.string.contents_message_key)) ?: "### ${context.getString(R.string.contents_not_found)}"
         } else {
-          markdown.value = "### Could not load contents!\\n\\n[reload](app://reload)"
+          markdown.value = "### ${context.getString(R.string.contents_could_not_load)}\\n\\n[${context.getString(R.string.contents_reload)}](app://reload)"
         }
       }.addOnFailureListener {
-        markdown.value = "### Could not load contents!\\n\\n[reload](app://reload)"
+        markdown.value = "### ${context.getString(R.string.contents_could_not_load)}\\n\\n[${context.getString(R.string.contents_reload)}](app://reload)"
         Firebase.crashlytics.recordException(it)
       }
     }
@@ -132,7 +133,7 @@ class ContentsManager(private val firestore: FirebaseFirestore, private val cont
         confirmButton = {
           TextButton({
             showDialog.value = false
-          }) { Text(if (isJapaneseLanguage(context)) "閉じる" else "Close") }
+          }) { Text(stringResource(R.string.close)) }
         },
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(16.dp)

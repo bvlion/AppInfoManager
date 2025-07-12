@@ -1,0 +1,17 @@
+<resources>
+  <string name="close">Close</string>
+  <string name="update">Update</string>
+
+  <string name="contents_message_key">en</string>
+  <string name="contents_reload">reload</string>
+  <string name="contents_not_found">No contents found!</string>
+  <string name="contents_could_not_load">Could not load contents!</string>
+
+  <string name="change_log_title">Change Log</string>
+  <string name="change_log_message_key">messageEn</string>
+  <string name="change_log_error_message">Could not load change log!</string>
+
+  <string name="update_title">Update Available</string>
+  <string name="update_message_key">updateMessageEn</string>
+  <string name="update_default_message">A new version is available!</string>
+</resources>

@@ -1,5 +1,6 @@
 package info.bvlion.appinfomanager.changelog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -8,10 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,15 +28,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import info.bvlion.appinfomanager.COLLECTION_NAME
-import info.bvlion.appinfomanager.utils.isJapaneseLanguage
+import info.bvlion.appinfomanager.R
 
 class ChangeLogManager(private val firestore: FirebaseFirestore, private val context: Context) {
+  @SuppressLint("UnusedBoxWithConstraintsScope")
   @Composable
   fun ShowChangeLog(showDialog: MutableState<Boolean>) {
     val list = remember { mutableStateListOf<ChangeLog>() }
@@ -53,21 +54,18 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
                 ChangeLog(
                   version = key,
                   releaseDate = items["date"].toString(),
-                  updateMessage = if (isJapaneseLanguage(context))
-                    items["messageJa"].toString()
-                  else
-                    items["messageEn"].toString()
+                  updateMessage = items[context.getString(R.string.change_log_message_key)].toString()
                 )
               )
             }
             list.reverse()
             errorMessage.value = ""
           } else {
-            errorMessage.value = "Could not load contents!"
+            errorMessage.value = context.getString(R.string.change_log_error_message)
           }
         }.addOnFailureListener {
           Firebase.crashlytics.recordException(it)
-          errorMessage.value = "Could not load contents!"
+          errorMessage.value = context.getString(R.string.change_log_error_message)
         }
     }
 
@@ -77,12 +75,7 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
           showDialog.value = false
         },
         title = {
-          Text(
-            if (isJapaneseLanguage(context))
-              "更新履歴"
-            else
-              "Change Log"
-          )
+          Text(stringResource(R.string.change_log_title))
         },
         text = {
           BoxWithConstraints {
@@ -116,7 +109,7 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
           TextButton({
             showDialog.value = false
           }) {
-            Text(if (isJapaneseLanguage(context)) "閉じる" else "Close")
+            Text(stringResource(R.string.close))
           }
         },
         shape = RoundedCornerShape(8.dp),
