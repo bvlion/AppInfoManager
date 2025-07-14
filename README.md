@@ -66,7 +66,7 @@ android {
 
 ### 更新履歴の表示
 ``` kotlin
-ChangeLogManager(FirebaseFirestore.getInstance(), this).ShowChangeLog(showChangeLog)
+ChangeLogManager(FirebaseFirestore.getInstance(), this).ShowChangeLog(showChangeLog, BuildConfig.VERSION_NAME)
 ```
 
 引数の `MutableState<Boolean>` を true にするとダイアログで表示されます。

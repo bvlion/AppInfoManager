@@ -40,7 +40,7 @@ import info.bvlion.appinfomanager.R
 class ChangeLogManager(private val firestore: FirebaseFirestore, private val context: Context) {
   @SuppressLint("UnusedBoxWithConstraintsScope")
   @Composable
-  fun ShowChangeLog(showDialog: MutableState<Boolean>) {
+  fun ShowChangeLog(showDialog: MutableState<Boolean>, currentVersionCode: String) {
     val list = remember { mutableStateListOf<ChangeLog>() }
     val errorMessage = remember { mutableStateOf("") }
 
@@ -48,7 +48,7 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
       firestore.collection(COLLECTION_NAME).document("changeLog").get()
         .addOnSuccessListener { document ->
           if (document.exists()) {
-            document.data?.forEach { (key, value) ->
+            for ((key, value) in document.data ?: emptyMap()) {
               val items = value as Map<*, *>
               list.add(
                 ChangeLog(
@@ -57,6 +57,9 @@ class ChangeLogManager(private val firestore: FirebaseFirestore, private val con
                   updateMessage = items[context.getString(R.string.change_log_message_key)].toString()
                 )
               )
+              if (key == currentVersionCode) {
+                break
+              }
             }
             list.reverse()
             errorMessage.value = ""
