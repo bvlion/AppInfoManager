@@ -1,4 +1,9 @@
 version: 2
+registries:
+  maven-google:
+    type: maven-repository
+    url: https://maven.google.com
+
 updates:
   - package-ecosystem: "gradle"
     directory: "/"
@@ -7,3 +12,5 @@ updates:
       time: "09:00"
       timezone: "Asia/Tokyo"
     open-pull-requests-limit: 15
+    registries:
+      - maven-google
